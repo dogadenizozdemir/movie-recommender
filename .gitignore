@@ -1,0 +1,9 @@
+# Large data files are not uploaded to GitHub
+data/*.csv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
