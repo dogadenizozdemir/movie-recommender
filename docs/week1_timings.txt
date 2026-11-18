@@ -1,0 +1,36 @@
+--- Run 1 ---
+Loaded 9742 movies, 610 users, 100836 ratings
+PostgreSQL load time: 1.25 seconds
+Loaded 9742 movies, 100836 ratings
+MongoDB load time: 0.68 seconds
+--- Run 2 ---
+Loaded 9742 movies, 610 users, 100836 ratings
+PostgreSQL load time: 1.28 seconds
+Loaded 9742 movies, 100836 ratings
+MongoDB load time: 0.66 seconds
+--- Run 3 ---
+Loaded 9742 movies, 610 users, 100836 ratings
+PostgreSQL load time: 1.28 seconds
+Loaded 9742 movies, 100836 ratings
+MongoDB load time: 0.65 seconds
+--- Query timings ---
+PostgreSQL: 9742 movies, 100836 ratings
+MongoDB:    9742 movies, 100836 ratings
+
+Top 5 movies (PostgreSQL):
+  Shawshank Redemption, The (1994) - 4.43 (317 ratings)
+  Godfather, The (1972) - 4.29 (192 ratings)
+  Fight Club (1999) - 4.27 (218 ratings)
+  Cool Hand Luke (1967) - 4.27 (57 ratings)
+  Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb (1964) - 4.27 (97 ratings)
+
+Top 5 movies (MongoDB):
+  Shawshank Redemption, The (1994) - 4.43 (317 ratings)
+  Godfather, The (1972) - 4.29 (192 ratings)
+  Fight Club (1999) - 4.27 (218 ratings)
+  Cool Hand Luke (1967) - 4.27 (57 ratings)
+  Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb (1964) - 4.27 (97 ratings)
+
+Average query time over 10 runs:
+  Query A (one user's ratings): PostgreSQL 0.32 ms | MongoDB 0.86 ms
+  Query B (top 5 movies):       PostgreSQL 18.19 ms | MongoDB 40.13 ms

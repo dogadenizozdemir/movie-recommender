@@ -4,19 +4,14 @@ import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
 
-# Connection settings (same as in docker-compose.yml)
-conn = psycopg2.connect(
-    host="localhost",
-    port=5432,
-    dbname="movie_db",
-    user="movie_user",
-    password="movie_pass",
-)
+from config import DATA_DIR, SQL_DIR, PG_PARAMS
+
+conn = psycopg2.connect(**PG_PARAMS)
 cur = conn.cursor()
 
 # Read the CSV files
-movies = pd.read_csv("data/movies.csv")
-ratings = pd.read_csv("data/ratings.csv")
+movies = pd.read_csv(DATA_DIR / "movies.csv")
+ratings = pd.read_csv(DATA_DIR / "ratings.csv")
 movies.columns = movies.columns.str.lower()
 ratings.columns = ratings.columns.str.lower()
 
@@ -24,6 +19,11 @@ ratings.columns = ratings.columns.str.lower()
 ratings["rated_at"] = pd.to_datetime(ratings["timestamp"], unit="s")
 users = ratings[["userid"]].drop_duplicates()
 
+# Create the tables and indexes from schema.sql (drops old ones, so re-running is safe)
+cur.execute((SQL_DIR / "schema.sql").read_text())
+conn.commit()
+
+# Only the data insertion is timed; indexes already exist, like in the MongoDB script
 start = time.time()
 
 # Insert movies, users, ratings (in this order because of foreign keys)

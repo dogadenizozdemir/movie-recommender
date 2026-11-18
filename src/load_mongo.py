@@ -1,15 +1,16 @@
 import time
 
 import pandas as pd
-from pymongo import MongoClient
+from pymongo import ASCENDING, MongoClient
 
-# Connection settings (same as in docker-compose.yml)
-client = MongoClient("mongodb://movie_user:movie_pass@localhost:27017/?authSource=admin")
-db = client["movie_db"]
+from config import DATA_DIR, MONGO_URI, MONGO_DB
+
+client = MongoClient(MONGO_URI)
+db = client[MONGO_DB]
 
 # Read the CSV files
-movies = pd.read_csv("data/movies.csv")
-ratings = pd.read_csv("data/ratings.csv")
+movies = pd.read_csv(DATA_DIR / "movies.csv")
+ratings = pd.read_csv(DATA_DIR / "ratings.csv")
 movies.columns = movies.columns.str.lower()
 ratings.columns = ratings.columns.str.lower()
 
@@ -39,11 +40,16 @@ rating_docs = [
 db.movies.drop()
 db.ratings.drop()
 
+# Indexes are created before loading, same as the PostgreSQL schema:
+# unique movie_id, unique (user_id, movie_id) and a separate movie_id index
+db.movies.create_index("movie_id", unique=True)
+db.ratings.create_index([("user_id", ASCENDING), ("movie_id", ASCENDING)], unique=True)
+db.ratings.create_index("movie_id")
+
+# Only the data insertion is timed, like in load_postgres.py
 start = time.time()
 db.movies.insert_many(movie_docs)
 db.ratings.insert_many(rating_docs)
-db.ratings.create_index("user_id")
-db.ratings.create_index("movie_id")
 elapsed = time.time() - start
 
 print(f"Loaded {db.movies.count_documents({})} movies, {db.ratings.count_documents({})} ratings")
