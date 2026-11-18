@@ -1,0 +1,9 @@
+macOS: 26.6.2
+Docker: Docker version 29.8.0, build 88096ef
+Docker Compose: 5.5.1
+Python: Python 3.12.7
+pandas: 2.2.2
+psycopg2: 2.9.13 (dt dec pq3 ext lo64)
+pymongo: 4.19.0
+PostgreSQL: postgres (PostgreSQL) 16.15 (Debian 16.15-1.pgdg13+2)
+MongoDB: db version v7.0.48
