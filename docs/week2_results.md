@@ -44,6 +44,16 @@ The model code is the same for both databases, so small differences in model tim
 - The `ratings` data was not touched (100,836 rows)
 - User 53 had no similar neighbours, so this user got the most popular unseen movies, marked `popularity-fallback`. The reason was not tested.
 
+## Reading a saved top-10 list back
+`src/check_recommendations.py` reads the top-10 list of one user 1,000 times per round (cycling through all 610 users). The connection is opened once, 50 warm-up queries are not counted, and the average of 3 rounds is reported.
+
+| Database | How the list is stored | Average time per query (ms) | Rounds (ms) |
+|---|---|---|---|
+| PostgreSQL | 10 rows in `recommendations`, titles from `movies` with a JOIN | 0.163 | 0.166, 0.164, 0.160 |
+| MongoDB | one document per user, titles stored inside | 0.209 | 0.207, 0.209, 0.211 |
+
+Both are far below one millisecond. PostgreSQL was about 0.05 ms faster per query, so storing the titles inside the document did not make MongoDB faster here. We did not test why. The dataset is small and both databases run in Docker on the same laptop, so this result should not be generalised to larger systems.
+
 ## Limitations
 - Precision and recall look low in absolute terms because the test set only holds 20% of each user's ratings, and movies a user never rated count as not relevant.
 - k=50 was chosen before looking at test results. k=100 is slightly better.
